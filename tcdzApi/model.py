@@ -13,6 +13,8 @@ class Team(db.Model):
     
     name = db.Column(db.String(200), nullable=False, unique=True)
     type = db.Column(db.String(100), nullable=False)
+    primary_colour = db.Column(db.String(10), nullable=True)
+    secondary_colour = db.Column(db.String(10), nullable=True)
     gender = db.Column(db.String(10), nullable=False)
     display_name = db.Column(db.String(20), nullable=False)
     old_names = db.Column(db.String(500), nullable=True)
@@ -24,7 +26,9 @@ class Team(db.Model):
             'type': self.type,
             'gender': self.gender,
             'displayName': self.display_name,
-            'oldNames': self.old_names
+            'oldNames': self.old_names,
+            'primaryColour':self.primary_colour,
+            'secondaryColour':self.secondary_colour
         }
 
     def __repr__(self):

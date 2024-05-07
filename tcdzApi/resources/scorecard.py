@@ -13,17 +13,18 @@ class ScorecardResource(Resource):
         self.tag = "ScorecardResource"
 
     def get(self, matchId):
-        print("111111111111111111111111111111111111111111111111111111: id is: ",matchId)
         innsScList = self.get_match_innings_scorecards_list(matchId)
-        print("222222222222222222222222222222222222222222222222222222222: innsScList size is: ",len(innsScList))
-        innsScListSer = [sc.serialize() for sc in innsScList]
-        innsScListJson = jsonify(innsScListSer)
-        print("DONE..DONE...DONE...DONE..DONE..DONE..DONE...DONE...DONE..DONE..DONE..DONE...DONE...DONE..DONE..")
-        return {'status': 'success', 'data': innsScListJson}, 200
+        innsScListSer = [sc.to_dict() for sc in innsScList]
+        #for local
+        #with open('./util/619_scorecard.json', 'r') as file: #/Users/rohithreddy/Downloads/cricket_project/git/tcdzApiServices/tcdzApi/util/619_scorecard.json
+        #    j = json.load(file)
+        #innsScListSer = j.get('data')
+        return {'status': 'success', 'data': innsScListSer}, 200
     
     def get_match_innings_scorecards_list(self, mId: int) -> List[InningsScorecard]:
         start_time = time.time()
         isc_list = []
+        #print("start_time: ", start_time)
         #match = Match.query.filter_by(match_id=mId).first()  # Assuming match_repo is defined elsewhere
         matchInnsList = Innings.query.filter_by(match_id=mId).all()
         for innings in matchInnsList:
@@ -32,14 +33,19 @@ class ScorecardResource(Resource):
             isc.innings_id = innings.innings_id
             isc.name = innings.team
             isc.index = int(innings.innings_number)
+
+            query_start_time = time.time()
             dels_list = Delivery.query.filter_by(innings_id=innings.innings_id).all()  # Assuming delivery_repo is defined elsewhere
-            
+            #print("time take for the delivery query fetch in ms: ", ((time.time()-query_start_time)*1000))
+            #print("check the size if u want: ", len(dels_list))
+            # Handle BatterScore
             batpos = 1
+            #print("starting batting of ",isc.name," at time stamp from start: ", ((time.time()-start_time)*1000)) 
             for deli in dels_list:
+                
                 isc.runs += deli.runs.total_runs
                 isc.extras += deli.runs.extra_runs
                 
-                # Handle BatterScore
                 if not isc.scorecard_has_batter(deli.batter):  ##sending batter id
                     bs = BatterScore()
                     bs.batter_name = deli.batter_info.common_name if deli.batter_info.common_name else deli.batter_info.name
@@ -71,12 +77,12 @@ class ScorecardResource(Resource):
                             isc.add_batter_score_to_innings(bs2)
                         bs2 = isc.get_batter_score_from_innings(deli.wicket.player_out) ##sending player_out id 
                         bs2.fill_wicket_details(deli.wicket)
-                        bs2.out = True
-            print("finished innings batting in ms: ", ((time.time()-start_time)*1000))           
+                        bs2.out = True         
+            print("finished batting innings of ",isc.name," at time stamp from start: ", ((time.time()-start_time)*1000)) 
             # Calculate strike rates for batters
             for bs in isc.batter_scores_list:
-                bs.strike_rate = round(100 * bs.runs / bs.balls, 2) if bs.balls != 0 else 0
-                
+                bs.strike_rate = round(100 * bs.runs / bs.balls, 2) if bs.balls != 0 else 0 
+            #print("starting bowling of ",isc.name," at time stamp from start: ", ((time.time()-start_time)*1000)) 
             # Handle BowlerScore
             for deli in dels_list:
                 if not isc.scorecard_has_bowler(deli.bowler):   ##sending bowler id 
@@ -95,7 +101,7 @@ class ScorecardResource(Resource):
                     bc.noballs += deli.extras.noballs
                 if deli.wicket and deli.wicket.kind in BOWLER_CREDITED_WICKET_KINDS:
                     bc.wickets += 1
-            print("finished innings bowling in ms: ", ((time.time()-start_time)*1000)) 
+            print("finished bowling innings of ",isc.name," at time stamp from start: ",((time.time()-start_time)*1000))
             # Calculate overs and economies for bowlers
             total_balls = sum(bc.balls for bc in isc.bowler_scores_list)
             total_overs = total_balls // 6 + (total_balls % 6) / 10
@@ -103,8 +109,10 @@ class ScorecardResource(Resource):
             for bc in isc.bowler_scores_list:
                 bc.overs = round(bc.balls / 6 + (bc.balls % 6) / 10, 2)
                 bc.economy = round(bc.runs / (bc.balls / 6), 2) if bc.balls != 0 else 0
-            
+            #print("finished econs of bowling innings of ",isc.name," at time stamp from start: ",((time.time()-start_time)*1000)) 
+
             isc_list.append(isc)
+
         end_time = time.time()
         elapsed_time_ms = (end_time - start_time) * 1000
         print("scorecards fetch done in ms: ", elapsed_time_ms)

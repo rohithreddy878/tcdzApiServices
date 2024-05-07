@@ -34,8 +34,10 @@ class BatterScore:
     def fill_wicket_details(self, w):
         self.wicket_kind = w.kind
         self.wicket_bowler_name = w.bowler_info.common_name if w.bowler_info.common_name else w.bowler_info.name
-        self.wicket_fielder1_name = w.fielder1_info.common_name if w.fielder1_info else ""
-        self.wicket_fielder2_name = w.fielder2_info.common_name if w.fielder2_info else ""
+        if(w.fielder1_info):
+         self.wicket_fielder1_name = w.fielder1_info.common_name if w.fielder1_info.common_name else w.fielder1_info.name
+        if(w.fielder2_info):
+         self.wicket_fielder2_name = w.fielder2_info.common_name if w.fielder2_info.common_name else w.fielder2_info.name
 
 
 
