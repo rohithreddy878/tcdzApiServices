@@ -31,6 +31,19 @@ class Team(db.Model):
             'secondaryColour':self.secondary_colour
         }
 
+    @staticmethod
+    def from_row_to_obj(row):
+        return {
+            'teamId': row.team_id,
+            'name': row.name,
+            'type': row.type,
+            'gender': row.gender,
+            'displayName': row.display_name,
+            'oldNames': row.old_names,
+            'primaryColour':row.primary_colour,
+            'secondaryColour':row.secondary_colour
+        }
+
     def __repr__(self):
         return f"<Team(team_id={self.team_id}, name={self.name}, type={self.type}, gender={self.gender}, display_name={self.display_name}, old_names={self.old_names})>"
 
@@ -66,8 +79,23 @@ class Player(db.Model):
             'commonName': self.common_name
         }
 
+    @staticmethod
+    def from_row_to_obj(row):
+        return {
+            'playerId': row.player_id,
+            'name': row.name,
+            'role': row.player_role,
+            'country': row.country,
+            'batStyle': row.bat_style,
+            'bowlStyle': row.bowl_style,
+            #'cricsheetId': self.cricsheet_id,
+            #'cricinfoId': self.cricinfo_id,
+            'cricsheetName': row.cricsheet_name,
+            'commonName': row.common_name
+        }
+
     def __repr__(self):
-        return f'<Player id={self.id}, name={self.name}, player_role={self.player_role}, country={self.country}>'
+        return f'<Player id={self.player_id}, name={self.name}, player_role={self.player_role}, country={self.country}>'
 
 
 class League(db.Model):
@@ -88,7 +116,7 @@ class League(db.Model):
         }
 
     def __repr__(self):
-        return f'<League id={self.id}, name={self.name}, format={self.game_format}>'
+        return f'<League id={self.league_id}, name={self.name}, format={self.game_format}>'
 
 
 class LeagueEvent(db.Model):
@@ -126,7 +154,7 @@ class LeagueEvent(db.Model):
         }
 
     def __repr__(self):
-        return f'<LeagueEvent id={self.id}, name={self.name}, match_type={self.match_type}, season={self.season}>'
+        return f'<LeagueEvent id={self.league_event_id}, name={self.name}, match_type={self.match_type}, season={self.season}>'
 
 
 class Match(db.Model):
