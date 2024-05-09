@@ -4,7 +4,7 @@
         {
             "matchId": 619,
             "inningsId": 1236,
-            "name": "Gujarat Titans",
+            "teamName": "Gujarat Titans",
             "index": 1,
             "runs": 214,
             "overs": 20.0,
@@ -148,12 +148,13 @@
                     "wides": 2,
                     "economy": 11.0
                 }
-            ]
+            ],
+            "teamDisplayName": "GT"
         },
         {
             "matchId": 619,
             "inningsId": 1237,
-            "name": "Chennai Super Kings",
+            "teamName": "Chennai Super Kings",
             "index": 2,
             "runs": 171,
             "overs": 15.0,
@@ -339,7 +340,8 @@
                     "wides": 0,
                     "economy": 12.0
                 }
-            ]
+            ],
+            "teamDisplayName": "CSK"
         }
     ]
 }

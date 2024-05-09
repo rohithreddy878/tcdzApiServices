@@ -19,6 +19,21 @@ class PlayerResource(Resource):
         res_json = pl.to_dict()
         return {'status': 'success', 'data': res_json}, 200
 
+class PlayerPlayedResource(Resource):
+    def __init__(self):
+        self.tag = "PlayerPlayedResource"
+
+    def get(self, playerId, role):
+        count = 0
+        if(role=='batter'):
+             query = text("SELECT count(*) from cricket.deliveries WHERE batter= :playerId")
+        elif(role=='bowler'):
+             query = text("SELECT count(*) from cricket.deliveries WHERE bowler= :playerId")        
+        result = db.session.execute(query, {"playerId": playerId})
+        res = result.mappings().all()
+        countRes = res[0].count 
+        return {'status': 'success', 'data': {"count":countRes}}, 200
+
 class FavouritePlayersResource(Resource):
     def __init__(self):
         self.tag = "FavouritePlayersResource"

@@ -83,6 +83,7 @@ class InningsScorecard:
         self.overs = 0
         self.wickets = 0
         self.extras = 0
+        self.teamDisplayName = ""
         self.batter_scores_list = []
         self.bowler_scores_list = []
 
@@ -114,12 +115,13 @@ class InningsScorecard:
         return {
             'matchId': self.match_id,
             'inningsId': self.innings_id,
-            'name': self.name,
+            'teamName': self.name,
             'index': self.index,
             'runs': self.runs,
             'overs': self.overs,
             'wickets': self.wickets,
             'extras': self.extras,
             'batterScoresList': [bs.to_dict() for bs in self.batter_scores_list],
-            'bowlerScoresList': [bc.to_dict() for bc in self.bowler_scores_list]
+            'bowlerScoresList': [bc.to_dict() for bc in self.bowler_scores_list],
+            'teamDisplayName': self.teamDisplayName
         }

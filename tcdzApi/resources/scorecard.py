@@ -13,9 +13,9 @@ class ScorecardResource(Resource):
         self.tag = "ScorecardResource"
 
     def get(self, matchId):
-        #innsScList = self.get_match_innings_scorecards_list(matchId)
-        #innsScListSer = [sc.to_dict() for sc in innsScList]
-        #for local
+        # innsScList = self.get_match_innings_scorecards_list(matchId)
+        # innsScListSer = [sc.to_dict() for sc in innsScList]
+        # for local
         with open('./util/619_scorecard.json', 'r') as file: #/Users/rohithreddy/Downloads/cricket_project/git/tcdzApiServices/tcdzApi/util/619_scorecard.json
             j = json.load(file)
         innsScListSer = j.get('data')
@@ -32,6 +32,7 @@ class ScorecardResource(Resource):
             isc.match_id = mId
             isc.innings_id = innings.innings_id
             isc.name = innings.team
+            isc.teamDisplayName = innings.team_info.display_name
             isc.index = int(innings.innings_number)
 
             query_start_time = time.time()
