@@ -186,6 +186,9 @@ class Match(db.Model):
     team2_info = db.relationship('Team', uselist=False, foreign_keys=[team2])
     toss_won_by_team_info = db.relationship('Team', uselist=False, foreign_keys=[toss_won_by_team])
 
+    innings_list = db.relationship('Innings', uselist=True)
+    playing_11_list = db.relationship('Playing11', uselist=True)
+
     def to_dict(self):
         return {
             'matchId': self.match_id,
@@ -194,8 +197,8 @@ class Match(db.Model):
             'date': self.date.strftime('%Y-%m-%d') if self.date else None,
             'ballsPerOver': self.balls_per_over,
             'matchType': self.match_type,
-            'team1': self.team1,
-            'team2': self.team2,
+            'team1': self.team1_info.to_dict() if self.team1_info else None,
+            'team2': self.team2_info.to_dict() if self.team2_info else None,
             'tossWonTeam': self.toss_won_by_team_info.to_dict() if self.toss_won_by_team_info else None,
             'tossWinnerChoice': self.toss_winner_choice,
             'leagueEvent': self.league_event_info.to_dict() if self.league_event_info else None,
@@ -205,6 +208,33 @@ class Match(db.Model):
             'eventGroup': self.event_group,
             #'cricbuzz_match_id': self.cricbuzz_match_id,
             'matchOutcome': self.match_outcome.to_dict() if self.match_outcome else None,
+            'inningsList':[i.to_dict() for i in self.innings_list] if self.innings_list else None,
+            'playing11List':[p11.to_dict() for p11 in self.playing_11_list] if self.playing_11_list else None
+
+        }
+
+    def to_dict_basic(self):
+        return {
+            'matchId': self.match_id,
+            'name': self.name,
+            'venue': self.venue,
+            'date': self.date.strftime('%Y-%m-%d') if self.date else None,
+            'ballsPerOver': self.balls_per_over,
+            'matchType': self.match_type,
+            'team1': self.team1,
+            'team2': self.team2,
+            #'tossWonTeam': self.toss_won_by_team_info.to_dict() if self.toss_won_by_team_info else None,
+            #'tossWinnerChoice': self.toss_winner_choice,
+            'leagueEvent': self.league_event_info.to_dict() if self.league_event_info else None,
+            #'cricsheet_id': self.cricsheet_id,
+            'eventStage': self.event_stage,
+            'endDate': self.end_date.strftime('%Y-%m-%d') if self.end_date else None,
+            'eventGroup': self.event_group,
+            #'cricbuzz_match_id': self.cricbuzz_match_id,
+            'matchOutcome': self.match_outcome.to_dict() if self.match_outcome else None,
+            #'inningsList':[i.to_dict() for i in self.innings_list] if self.innings_list else None,
+            #'playing11List':[p11.to_dict() for p11 in self.playing_11_list] if self.playing_11_list else None
+
         }
 
     def __repr__(self):
@@ -227,6 +257,7 @@ class Innings(db.Model):
     # Define relationships
     #match = db.relationship('Match', uselist=False)
     team_info = db.relationship('Team', uselist=False)
+    powerplays_list = db.relationship('MatchPowerplay', uselist=True)
 
     def to_dict(self):
         return {
@@ -236,6 +267,7 @@ class Innings(db.Model):
             'targetOvers': self.target_overs,
             'targetRuns': self.target_runs,
             'number': self.innings_number,
+            'powerplaysList': [p.to_dict() for p in self.powerplays_list] if self.powerplays_list else None
 
         }
 

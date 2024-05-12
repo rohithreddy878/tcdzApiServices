@@ -1,6 +1,6 @@
 from flask import Blueprint
 from flask_restful import Api
-from resources.match import MatchResource
+from resources.match import MatchResource, MatchesListPaginatedResource
 from resources.scorecard import ScorecardResource
 from resources.player import PlayerResource, FavouritePlayersResource, SearchPlayersResource, PlayerPlayedResource
 from resources.league import LeagueSeasonsResource, LeagueEventsForSeasonResource
@@ -10,14 +10,18 @@ api_bp = Blueprint('cric/ml/services', __name__)
 api = Api(api_bp)
 
 # Route For Match endpoint
-api.add_resource(MatchResource,'/matches/<int:id>')
+api.add_resource(MatchResource,'/matches/<int:matchId>')
 api.add_resource(ScorecardResource,'/scorecards/<int:matchId>')
+api.add_resource(MatchesListPaginatedResource,'/matches/paginated/<int:leagueEventId>')
+
 api.add_resource(PlayerResource,'/players/<int:playerId>')
 api.add_resource(PlayerPlayedResource,'/players/<int:playerId>/playedAs/<string:role>')
 api.add_resource(FavouritePlayersResource,'/favourites/players')
 api.add_resource(SearchPlayersResource,'/search/players/<string:searchString>')
+
 api.add_resource(LeagueSeasonsResource, '/leagues/seasons')
 api.add_resource(LeagueEventsForSeasonResource, '/leagues/events/<string:season>')
+
 
 
 
