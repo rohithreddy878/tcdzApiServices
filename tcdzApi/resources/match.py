@@ -1,9 +1,10 @@
 from flask import jsonify, request
-from flask_restful import Resource
-from model import db, Match, Delivery, Innings, Player
 from Constants import BOWLER_CREDITED_WICKET_KINDS
 from ast import literal_eval
 import json
+
+from flask_restful import Resource
+from model import db, Match, Delivery, Innings, Player
 
 class MatchResource(Resource):
     def __init__(self):

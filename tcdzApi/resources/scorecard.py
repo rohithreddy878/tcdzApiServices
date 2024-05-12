@@ -1,12 +1,13 @@
 from flask import jsonify, request
 from flask_restful import Resource
-from model import db, Match, Delivery, Innings, Player
-from Constants import BOWLER_CREDITED_WICKET_KINDS
 from ast import literal_eval
 import json
-from util.DTOs import InningsScorecard, BatterScore,BowlerScore 
 from typing import List
 import time
+
+from util.DTOs import InningsScorecard, BatterScore,BowlerScore 
+from model import db, Match, Delivery, Innings, Player
+from Constants import BOWLER_CREDITED_WICKET_KINDS
 
 class ScorecardResource(Resource):
     def __init__(self):
