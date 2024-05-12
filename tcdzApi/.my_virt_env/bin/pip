@@ -1,4 +1,4 @@
-#!/Users/rohithreddy/Downloads/cricket_project/pyt/tcdzApi/.my_env/bin/python3
+#!/Users/rohithreddy/Downloads/cricket_project/git/tcdzApiServices/tcdzApi/.my_virt_env/bin/python3.12
 # -*- coding: utf-8 -*-
 import re
 import sys

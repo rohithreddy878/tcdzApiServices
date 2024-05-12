@@ -12,3 +12,4 @@ nose
 Flask-Testing
 flask-redis
 flask-cors
+flask_sqlalchemy
