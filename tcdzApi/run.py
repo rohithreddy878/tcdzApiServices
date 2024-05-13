@@ -23,7 +23,7 @@ def create_app(config_filename):
 @app.route('/')
 @app.route('/cric/ml/services/')
 def availableApps():
-
+    print("availableApps called")
     return render_template('availableApp.html')
 
 
