@@ -83,3 +83,11 @@ jobs:
         with:
           app-name: 'tcdz-flask-api'
           slot-name: 'Production'
+
+
+      - name: Run Flask application
+        run: |
+          cd tcdzApi
+          ls
+          ls venv/lib
+          python3 run.py
