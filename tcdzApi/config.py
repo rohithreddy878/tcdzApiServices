@@ -14,7 +14,7 @@ class TestingConfig(BaseConfig):
     SQLALCHEMY_DATABASE_URI = 'cockroachdb://rohith:1GzkPwMOIO4z9j9d4Zwn3g@plains-emu-5603.g8z.gcp-us-east1.cockroachlabs.cloud:26257/defaultdb?sslmode=verify-full';
 
 class ProductionConfig(BaseConfig):
-    SQLALCHEMY_DATABASE_URI = 'cockroachdb://rohith:1GzkPwMOIO4z9j9d4Zwn3g@plains-emu-5603.g8z.gcp-us-east1.cockroachlabs.cloud:26257/defaultdb?sslmode=verify-full';
+    SQLALCHEMY_DATABASE_URI = 'cockroachdb://rohith:1GzkPwMOIO4z9j9d4Zwn3g@plains-emu-5603.g8z.gcp-us-east1.cockroachlabs.cloud:26257/defaultdb?sslmode=require&sslrootcert=util/root.crt';
 
 
 PresentConfig = BaseConfig
