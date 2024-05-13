@@ -87,8 +87,8 @@ jobs:
 
       - name: Run Flask application
         run: |
-          cd tcdzApi
-          ls
-          pwd
-          ls venv/lib
-          python3 run.py
+          az webapp config set --name tcdz-flask-api --resource-group tcdz-res-grp --startup-file 'pwd && python3 run.py'
+        env:
+          AZURE_WEBAPP_NAME: tcdz-flask-api
+          AZURE_RESOURCE_GROUP: tcdz-res-grp
+          
