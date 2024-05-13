@@ -19,9 +19,11 @@ jobs:
         working-directory: ${{ github.workspace }}
 
     steps:
-      - uses: actions/setup-node@v3
+      - name: Set up Node.js version 20
+      - uses: actions/setup-node@v4
         with:
           node-version: '20'
+          
       - uses: actions/checkout@v2
 
       - name: Set up Python version
