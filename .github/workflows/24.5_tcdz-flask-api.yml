@@ -22,6 +22,10 @@ jobs:
         with:
           python-version: '3.12'
 
+      - name: change curr directory to tcdzApi
+        run: |
+          cd tcdzApi
+
       - name: Create and start virtual environment
         run: |
           python -m venv venv
