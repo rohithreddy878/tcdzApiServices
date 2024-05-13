@@ -24,7 +24,10 @@ jobs:
 
       - name: change curr directory to tcdzApi
         run: |
+          pwd
+          ls
           cd tcdzApi
+          pwd
 
       - name: Create and start virtual environment
         run: |
