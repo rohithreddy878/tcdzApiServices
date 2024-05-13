@@ -89,5 +89,6 @@ jobs:
         run: |
           cd tcdzApi
           ls
+          pwd
           ls venv/lib
           python3 run.py
