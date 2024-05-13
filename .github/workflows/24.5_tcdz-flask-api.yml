@@ -87,7 +87,7 @@ jobs:
 
       - name: Run Flask application
         run: |
-          az webapp config set --name tcdz-flask-api --resource-group tcdz-res-grp --startup-file 'cd tcdzApi && pwd && pip install -r requirements.txt && python3 run.py'
+          az webapp config set --name tcdz-flask-api --resource-group tcdz-res-grp --startup-file 'cd tcdzApi && pwd && pip install -r requirements.txt && gunicorn -b 0.0.0.0:8000 run:app'
         env:
           AZURE_WEBAPP_NAME: tcdz-flask-api
           AZURE_RESOURCE_GROUP: tcdz-res-grp
