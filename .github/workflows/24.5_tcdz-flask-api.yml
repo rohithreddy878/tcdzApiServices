@@ -24,8 +24,6 @@ jobs:
 
       - name: change curr directory to tcdzApi
         run: |
-          pwd
-          ls
           cd tcdzApi
           pwd
 
@@ -35,7 +33,10 @@ jobs:
           source venv/bin/activate
       
       - name: Install dependencies
-        run: pip install -r requirements.txt
+        run: |
+          pwd
+          ls
+          pip install -r requirements.txt
 
       # Optional: Add step to run tests here (PyTest, Django test suites, etc.)
 
