@@ -7,7 +7,7 @@ class BatterScore:
         self.balls = 0
         self.fours = 0
         self.sixes = 0
-        self.strike_rate = 0
+        #self.strike_rate = 0
         self.out = False
         self.wicket_bowler_name = ""
         self.wicket_fielder1_name = ""
@@ -23,7 +23,7 @@ class BatterScore:
             'balls': self.balls,
             'fours': self.fours,
             'sixes': self.sixes,
-            'strikeRate': self.strike_rate,
+            #'strikeRate': self.strike_rate,
             'out': self.out,
             'wicketBowlerName': self.wicket_bowler_name,
             'wicketFielder1Name': self.wicket_fielder1_name,
@@ -35,9 +35,17 @@ class BatterScore:
         self.wicket_kind = w.kind
         self.wicket_bowler_name = w.bowler_info.common_name if w.bowler_info.common_name else w.bowler_info.name
         if(w.fielder1_info):
-         self.wicket_fielder1_name = w.fielder1_info.common_name if w.fielder1_info.common_name else w.fielder1_info.name
+            self.wicket_fielder1_name = w.fielder1_info.common_name if w.fielder1_info.common_name else w.fielder1_info.name
         if(w.fielder2_info):
-         self.wicket_fielder2_name = w.fielder2_info.common_name if w.fielder2_info.common_name else w.fielder2_info.name
+            self.wicket_fielder2_name = w.fielder2_info.common_name if w.fielder2_info.common_name else w.fielder2_info.name
+
+    def fill_wicket_details2(self, k,bn,f1n,f2n):
+        self.wicket_kind = k
+        self.wicket_bowler_name = bn
+        if(f1n != '' and f1n != None):
+            self.wicket_fielder1_name = f1n
+        if(f2n != '' and f2n != None):
+         self.wicket_fielder2_name = f2n
 
 
 
@@ -47,27 +55,27 @@ class BowlerScore:
     def __init__(self):
         self.bowler_id = None
         self.bowler_name = ""
-        self.overs = 0
+        #self.overs = 0
         self.balls = 0
         self.maidens = 0
         self.runs = 0
         self.wickets = 0
         self.noballs = 0
         self.wides = 0
-        self.economy = 0
+        #self.economy = 0
 
     def to_dict(self):
         return {
             'bowlerId': self.bowler_id,
             'bowlerName': self.bowler_name,
-            'overs': self.overs,
+            #'overs': self.overs,
             'balls': self.balls,
-            'maidens': self.maidens,
+            #'maidens': self.maidens,
             'runs': self.runs,
             'wickets': self.wickets,
             'noballs': self.noballs,
             'wides': self.wides,
-            'economy': self.economy
+            #'economy': self.economy
         }
     
 
