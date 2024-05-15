@@ -2,7 +2,8 @@ from flask import Blueprint
 from flask_restful import Api
 from resources.match import MatchResource, MatchesListPaginatedResource
 from resources.scorecard import ScorecardResource
-from resources.player import PlayerResource, FavouritePlayersResource, SearchPlayersResource, PlayerPlayedResource
+from resources.player import PlayerResource, FavouritePlayersResource, SearchPlayersResource
+from resources.player import PlayerPlayedResource, PlayerCareerStatsResource
 from resources.league import LeagueSeasonsResource, LeagueEventsForSeasonResource
 
 
@@ -18,9 +19,11 @@ api.add_resource(PlayerResource,'/players/<int:playerId>')
 api.add_resource(PlayerPlayedResource,'/players/<int:playerId>/playedAs/<string:role>')
 api.add_resource(FavouritePlayersResource,'/favourites/players')
 api.add_resource(SearchPlayersResource,'/search/players/<string:searchString>')
+api.add_resource(PlayerCareerStatsResource, '/stats/players/<int:playerId>')
 
 api.add_resource(LeagueSeasonsResource, '/leagues/seasons')
 api.add_resource(LeagueEventsForSeasonResource, '/leagues/events/<string:season>')
+
 
 
 

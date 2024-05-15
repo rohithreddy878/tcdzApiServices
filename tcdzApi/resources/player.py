@@ -8,6 +8,7 @@ import json
 from model import db, Match, Delivery, Innings, Player
 from Constants import BOWLER_CREDITED_WICKET_KINDS
 from Constants import  FAVOURITE_BATSMEN_LIST,FAVOURITE_BOWLERS_LIST,FAVOURITE_ALLROUNDERS_LIST
+import Constants
 
 
 class PlayerResource(Resource):
@@ -61,6 +62,75 @@ class SearchPlayersResource(Resource):
         playerRows =  result.mappings().all()
         playersList = [Player.from_row_to_obj(row) for row in playerRows]
         return {'status': 'success', 'data':playersList}, 200
+
+
+
+class PlayerCareerStatsResource(Resource):
+    def __init__(self):
+        self.tag = "PlayerCareerStatsResource"
+
+    def get(self,playerId):
+        stats = {}
+        stats['totalMatches']=self.getQueryResultForPlayerStat(Constants.PLAYER_TOTAL_IPL_MATCHES_PLAYED,playerId);
+        stats['inningsBatted']=self.getQueryResultForPlayerStat(Constants.PLAYER_INNINGS_BATTED_QUERY,playerId);
+        stats['inningsBowled']=self.getQueryResultForPlayerStat(Constants.PLAYER_INNINGS_BOWLED_QUERY,playerId);
+        
+        runs=self.getQueryResultForPlayerStat(Constants.BATTER_RUNS_SCORED_QUERY,playerId)
+        stats['runsScored']=float(runs) if runs else 0
+        
+        stats['ballsFaced']=self.getQueryResultForPlayerStat(Constants.BATTER_BALLS_FACED_QUERY,playerId);
+        stats['4s']=self.getQueryResultForPlayerStat(Constants.BATTER_FOURS_SCORED_QUERY,playerId);
+        stats['6s']=self.getQueryResultForPlayerStat(Constants.BATTER_SIXES_SCORED_QUERY,playerId);
+        outs=self.getQueryResultForPlayerStat(Constants.BATTER_NUMBER_OF_OUTS_QUERY,playerId);
+        stats['notOuts']=stats['inningsBatted']-outs;
+        
+        high_score = self.getQueryResultForPlayerStat(Constants.BATTER_HIGHEST_SCORE_QUERY, playerId)
+        stats['highestScore'] = float(high_score) if high_score else 0
+        
+        stats['100s']=self.getQueryResultForPlayerStatTwoParams(Constants.BATTER_LANDMARK_SCORES_QUERY,playerId,100)
+        stats['50s']=self.getQueryResultForPlayerStatTwoParams(Constants.BATTER_LANDMARK_SCORES_QUERY,playerId,50)
+        stats['30s']=self.getQueryResultForPlayerStatTwoParams(Constants.BATTER_LANDMARK_SCORES_QUERY,playerId,30)
+
+        stats['ballsBowled']=self.getQueryResultForPlayerStat(Constants.BOWLER_BALLS_BOWLED_QUERY, playerId)
+
+        bw_all_runs=self.getQueryResultForPlayerStat(Constants.BOWLER_ALL_RUNS_CONCEDED_QUERY, playerId)
+        bw_all_runs=float(bw_all_runs) if bw_all_runs else 0
+        bw_byes_runs=self.getQueryResultForPlayerStat(Constants.BOWLER_BYES_CONCEDED_QUERY, playerId)
+        bw_byes_runs=float(bw_byes_runs) if bw_byes_runs else 0
+        
+        stats['runsConceded']=bw_all_runs-bw_byes_runs
+
+        stats['wickets']=self.getQueryResultForPlayerStat(Constants.BOWLER_WICKETS_TAKEN_QUERY,playerId)
+        stats['3wHauls']=self.getQueryResultForPlayerStatTwoParams(Constants.BOWLER_LANDMARK_WICKETS_QUERY,playerId,3)
+        stats['4wHauls']=self.getQueryResultForPlayerStatTwoParams(Constants.BOWLER_LANDMARK_WICKETS_QUERY,playerId,4)
+            
+
+        print("stats- ",stats)
+
+        return {'status': 'success', 'data':stats}, 200
+
+    def getQueryResultForPlayerStat(self, queryString, playerId):
+        query = text(queryString)
+        queryRes = db.session.execute(query, {"playerIdParam": playerId})
+        count = queryRes.scalar()
+        return count
+
+    def getQueryResultForPlayerStatTwoParams(self, queryString, playerId,landmark):
+        query = text(queryString)
+        queryRes = db.session.execute(query, {"playerIdParam": playerId, "landmarkParam":landmark})
+        count = queryRes.scalar()
+        return count
+
+
+
+
+
+
+
+
+
+
+
 
 
 
