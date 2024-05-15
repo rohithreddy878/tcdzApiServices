@@ -75,6 +75,18 @@ BOWLER_LANDMARK_WICKETS_QUERY="""
 	WHERE wicketsTakenInMatch >= :landmarkParam;
 """
 
+PLAYER_PLAYED_TEAMS_QUERY = """
+	WITH RankedTeams AS (
+    	SELECT p.team AS played_team, m."date", ROW_NUMBER() OVER (PARTITION BY p.team ORDER BY m."date" DESC) AS rn
+    	FROM cricket.matches m LEFT JOIN cricket.Playing11 p ON p.match_id = m.match_id
+    	WHERE m.league_event_id IN (SELECT l.league_event_id FROM cricket.league_events l WHERE l.league_id = 6)
+    	AND (p.player1 = :playerIdParam OR p.player2 = :playerIdParam OR p.player3 = :playerIdParam OR
+        	p.player4 = :playerIdParam OR p.player5 = :playerIdParam OR p.player6 = :playerIdParam OR
+        	p.player7 = :playerIdParam OR p.player8 = :playerIdParam OR p.player9 = :playerIdParam OR
+        	p.player10 = :playerIdParam OR p.player11 = :playerIdParam OR p.subs_in_player = :playerIdParam))
+	SELECT played_team FROM RankedTeams WHERE rn = 1 ORDER BY "date" DESC;
+"""
+
 
 
 

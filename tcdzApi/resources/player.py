@@ -5,7 +5,7 @@ from ast import literal_eval
 import re
 import json
 
-from model import db, Match, Delivery, Innings, Player
+from model import db, Match, Delivery, Innings, Player, Team
 from Constants import BOWLER_CREDITED_WICKET_KINDS
 from Constants import  FAVOURITE_BATSMEN_LIST,FAVOURITE_BOWLERS_LIST,FAVOURITE_ALLROUNDERS_LIST
 import Constants
@@ -63,6 +63,15 @@ class SearchPlayersResource(Resource):
         playersList = [Player.from_row_to_obj(row) for row in playerRows]
         return {'status': 'success', 'data':playersList}, 200
 
+class PlayerTeamsResource(Resource):
+    def __init__(self):
+        self.tag = "PlayerTeamsResource"
+
+    def get(self,playerId):
+        teamsQuery = text(Constants.PLAYER_PLAYED_TEAMS_QUERY)
+        teamsQueryRes = db.session.execute(teamsQuery, {"playerIdParam": playerId}).mappings().all()
+        teamsListJson = [(Team.query.filter_by(name=t.played_team).first()).to_dict() for t in teamsQueryRes]
+        return {'status': 'success', 'data':teamsListJson}, 200
 
 
 class PlayerCareerStatsResource(Resource):
