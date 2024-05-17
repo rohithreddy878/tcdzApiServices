@@ -1,14 +1,30 @@
-# RESTAURANT_LIST = "restaurantsList"
-# MENU_LIST = "menusList"
-# FOOD_LIST = "foodsList"
-
 BOWLER_CREDITED_WICKET_KINDS = ["lbw","caught","bowled","stumped","caught and bowled","hit wicket"];
 
 ALL_WICKET_KINDS = ["caught","bowled","lbw","run out","stumped","caught and bowled","retired out","retired hurt","hit wicket","obstructing the field"];
 
-FAVOURITE_BATSMEN_LIST = ["Virat Kohli","Steve Smith","Joe Root","Kane Williamson","Babar Azam"];
-FAVOURITE_BOWLERS_LIST = ["Mitchell Starc","Ravichandran Ashwin","Jimmy Anderson","Pat Cummins","Kagiso Rabada"];
-FAVOURITE_ALLROUNDERS_LIST = ["Ben Stokes","Ravindra Jadeja","Hardik Pandya","Cameron Green","Dasun Shanaka"];
+FAVOURITE_BATSMEN_LIST = ["Virat Kohli","Kane Williamson","Kieron Pollard"];
+FAVOURITE_BOWLERS_LIST = ["Ravichandran Ashwin","Jasprit Bumrah","Sunil Narine"];
+FAVOURITE_ALLROUNDERS_LIST = ["Ravindra Jadeja","Hardik Pandya","Andre Russell"];
+
+PLAYERS_SEARCH_QUERY = """
+SELECT *
+FROM cricket.players pl
+WHERE (UPPER(pl.name) LIKE :searchNameParam OR UPPER(pl.common_name) LIKE :searchNameParam)
+AND pl.player_id IN (
+    SELECT DISTINCT player1 AS player FROM cricket.Playing11 
+    UNION SELECT DISTINCT player2 AS player FROM cricket.Playing11
+    UNION SELECT DISTINCT player3 AS player FROM cricket.Playing11 
+    UNION SELECT DISTINCT player4 AS player FROM cricket.Playing11
+    UNION SELECT DISTINCT player5 AS player FROM cricket.Playing11 
+    UNION SELECT DISTINCT player6 AS player FROM cricket.Playing11
+    UNION SELECT DISTINCT player7 AS player FROM cricket.Playing11 
+    UNION SELECT DISTINCT player8 AS player FROM cricket.Playing11
+    UNION SELECT DISTINCT player9 AS player FROM cricket.Playing11 
+    UNION SELECT DISTINCT player10 AS player FROM cricket.Playing11
+    UNION SELECT DISTINCT player11 AS player FROM cricket.Playing11 
+    UNION SELECT DISTINCT subs_in_player AS player FROM cricket.Playing11
+);
+"""
 
 DELIVERIES_FOR_INNINGS_FETCH_QUERY = """
     SELECT d.delivery_id,d.batter, d.bowler, 
@@ -22,6 +38,8 @@ DELIVERIES_FOR_INNINGS_FETCH_QUERY = """
     WHERE d.innings_id = :inningsIdParam
     ORDER BY d.innings_id, d.over asc, d.indicator asc;
 """
+
+# player career stats query
 
 PLAYER_TOTAL_IPL_MATCHES_PLAYED = """
 	SELECT count(*) FROM cricket.Playing11 p
@@ -86,6 +104,29 @@ PLAYER_PLAYED_TEAMS_QUERY = """
         	p.player10 = :playerIdParam OR p.player11 = :playerIdParam OR p.subs_in_player = :playerIdParam))
 	SELECT played_team FROM RankedTeams WHERE rn = 1 ORDER BY "date" DESC;
 """
+
+# Commentary Analysis queries
+
+PLAYER_RUNS_SCORED_COMMS_QUERY = """
+SELECT d.delivery_id,d.bowler,d.cricbuzz_commentary, 
+(SELECT m.date FROM cricket.matches m 
+    WHERE m.match_id=(SELECT i.match_id FROM cricket.innings i WHERE i.innings_id=d.innings_id)) as dat 
+FROM cricket.deliveries d LEFT JOIN cricket.runs r ON r.delivery_id=d.delivery_id
+WHERE d.innings_id in (SELECT innings_id FROM cricket.innings WHERE match_id in (SELECT match_id FROM cricket.matches WHERE league_event_id in (14,22,16,27,21,28,25)))
+AND d.batter=:playerIdParam  AND r.batter_runs=:runsParam
+ORDER BY dat desc;
+"""
+
+PLAYER_GOT_OUT_COMMS_QUERY = """
+SELECT d.delivery_id,d.bowler,d.cricbuzz_commentary, w.kind,
+(SELECT m.date FROM cricket.matches m 
+    WHERE m.match_id=(SELECT i.match_id FROM cricket.innings i WHERE i.innings_id=d.innings_id)) as dat 
+FROM cricket.deliveries d LEFT JOIN cricket.wickets w ON d.delivery_id=w.delivery_id
+WHERE d.innings_id in (SELECT innings_id FROM cricket.innings WHERE match_id in (SELECT match_id FROM cricket.matches WHERE league_event_id in (14,22,16,27,21,28,25)))
+AND w.player_out=:playerIdParam
+ORDER BY dat desc;
+"""
+
 
 
 

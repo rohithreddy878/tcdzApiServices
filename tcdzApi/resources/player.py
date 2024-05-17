@@ -53,9 +53,10 @@ class SearchPlayersResource(Resource):
         self.tag = "SearchPlayersResource"
 
     def get(self,searchString):
-        nameLike = '\\b' + re.escape(searchString.upper()) + '\\b'  #'%'+searchString.upper()+'%'
-        query = text("SELECT * from cricket.players WHERE UPPER(name) ~ :nameLike OR UPPER(common_name) ~ :nameLike")
-        result = db.session.execute(query, {"nameLike": nameLike})
+        nameLike = re.escape(searchString.upper())  #'%'+searchString.upper()+'%'
+        searchNameParam = "%"+nameLike+"%"
+        query = text(Constants.PLAYERS_SEARCH_QUERY)
+        result = db.session.execute(query, {"searchNameParam": searchNameParam})
         # Check if the result is empty
         if result.rowcount == 0:
             return {'status': 'failure', 'message': 'No players found'}, 404
