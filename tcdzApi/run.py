@@ -15,22 +15,9 @@ def create_app(config_filename):
     db.init_app(app)
     return app
 
+
+# ONLY FOR PRODUCTION, COMMENT IN DEV ENV
 app = create_app(ProductionConfig)
-
-
-t = 0
-# def create_app(config_filename):
-#     app.config.from_object(config_filename)
-#     global t
-#     if t == 0:
-#         app.register_blueprint(api_bp, url_prefix='/cric/ml/services')
-#         t = 1
-#     if config_filename != TestingConfig:
-#         db.init_app(app)
-#         #redis_cache.init_app(app)
-#     return app
-
-
 
 
 @app.route('/')
@@ -41,6 +28,6 @@ def availableApps():
 
 
 if __name__ == "__main__":
-    PresentConfig = ProductionConfig
+    PresentConfig = DevelopmentConfig
     app = create_app(PresentConfig)
-    app.run(debug=False,port=9000)
+    app.run(debug=True,port=9000)

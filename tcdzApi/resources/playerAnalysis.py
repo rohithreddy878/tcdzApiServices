@@ -22,8 +22,8 @@ from wordcloud import WordCloud
 
 
 # Ensure the necessary NLTK data is available
-nltk.download('punkt')
-nltk.download('stopwords')
+# nltk.download('punkt')
+# nltk.download('stopwords')
 
 
 
