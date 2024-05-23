@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}The Cover Drive Zone{% endblock %}</title>
+    <link rel="stylesheet" href="../../static/css/app.css">
+</head>
+<body>
+    <div class="content-wrapper">
+        <header class="header">
+            <div class="header-content">
+                <div class="logo">
+                    <img src="../../static/css/images/logo-circle.png" alt="The Cover Drive Zone" width="120" height="120">
+                </div>
+                <div class="title-section">
+                    <h1 class="appn-short-title">The Cover Drive Zone</h1>
+                    <p class="appn-caption">Studying a funny Game...</p>
+                </div>
+                <div class="cta-button">
+                    <button onclick="window.location.href='#'">Home <span></span></button>
+                </div>
+            </div>
+            <div class="tabs-nav flex-div"> 
+                <ul>
+                    <li><a href="../home" class="tab-button">
+                        <img src="../../static/css/icons/home.png" class="tab-icon">
+                        Home</a></li>
+                    <li><a href="../players" class="tab-button">
+                        <img src="../../static/css/icons/user.png" class="tab-icon">
+                        Players</a></li>
+                    <li><a href="../matches" class="tab-button">
+                        <img src="../../static/css/icons/deviation.png" class="tab-icon">
+                        Matches</a></li>
+                </ul>
+            </div>
+        </header>
+        <main class="main-content">
+            {% block content %}{% endblock %}
+        </main>
+    </div>
+    <footer>
+        <div>
+            <ul>
+                <li><a href="https://www.linkedin.com/in/rohith-reddy-santa-3b0b57158/" target="_blank">Me</a></li>
+                <li><a href="mailto:rohithreddysanta@mail.com" target="_blank">Feedback</a></li>
+                <li><a href="https://cricsheet.org/" target="_blank">Data Source</a></li>
+            </ul>
+        </div>
+        <div class="max-width text-color-secondary typography-body-sm">
+            Copyright © All rights reserved.
+        </div>
+    </footer>
+</body>
+</html>

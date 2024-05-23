@@ -7,7 +7,6 @@ from resources.player import PlayerPlayedResource, PlayerCareerStatsResource, Pl
 from resources.playerAnalysis import PlayerBatStrengthsResource, PlayerBatHighlightsImageResource
 from resources.league import LeagueSeasonsResource, LeagueEventsForSeasonResource
 
-
 api_bp = Blueprint('cric/ml/services', __name__)
 api = Api(api_bp)
 
@@ -28,6 +27,9 @@ api.add_resource(PlayerBatHighlightsImageResource, '/strengths/bat/highlights/pl
 
 api.add_resource(LeagueSeasonsResource, '/leagues/seasons')
 api.add_resource(LeagueEventsForSeasonResource, '/leagues/events/<string:season>')
+
+
+
 
 
 
