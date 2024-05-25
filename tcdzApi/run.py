@@ -21,26 +21,9 @@ app = create_app(ProductionConfig)
 
 
 @app.route('/')
-@app.route('/ui')
+@app.route('/cric/ml/services/')
 def homepage():
     return render_template('index.html')
-
-@app.route('/dashboard/home/')
-def dashboardHome():
-    return render_template('dashboardHome.html')
-
-@app.route('/dashboard/')
-def dashboard():
-    return redirect(url_for('dashboardHome'))
-
-@app.route('/dashboard/players/')
-def dashboardPlayers():
-    return render_template('players.html')
-
-@app.route('/dashboard/matches/')
-def dashboardMatches():
-    return render_template('matches.html')
-
 
 if __name__ == "__main__":
     PresentConfig = DevelopmentConfig
