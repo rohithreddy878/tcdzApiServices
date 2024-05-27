@@ -64,6 +64,7 @@ class Player(db.Model):
     cricinfo_id = db.Column(db.String(20), unique=True)
     cricsheet_name = db.Column(db.String(200))
     common_name = db.Column(db.String(100))
+    photo_url = db.Column(db.String(500))
 
     def to_dict(self):
         return {
@@ -76,7 +77,8 @@ class Player(db.Model):
             #'cricsheetId': self.cricsheet_id,
             #'cricinfoId': self.cricinfo_id,
             'cricsheetName': self.cricsheet_name,
-            'commonName': self.common_name
+            'commonName': self.common_name,
+            'photoUrl': self.photo_url,
         }
 
     @staticmethod
@@ -91,7 +93,8 @@ class Player(db.Model):
             #'cricsheetId': self.cricsheet_id,
             #'cricinfoId': self.cricinfo_id,
             'cricsheetName': row.cricsheet_name,
-            'commonName': row.common_name
+            'commonName': row.common_name,
+            'photoUrl': row.photo_url,
         }
 
     def __repr__(self):
