@@ -120,7 +120,7 @@ class PlayerBatHighlightsImageResource(Resource):
         return send_file(img, mimetype='image/png')
 
     def highlight_top_words_in_sentences(self, sentences,removable_words, num_words=25):
-        names_removed_sentences = [self.remove_proper_nouns(x) for x in sentences if x is not None]
+        names_removed_sentences=[self.remove_proper_nouns(x) for x in sentences if x is not None]
         cleaned_sentences = [self.clean_comm_text(x,removable_words) for x in names_removed_sentences]
         comm_text = ' '.join(cleaned_sentences)
         stop_words = set(stopwords.words('english'))
