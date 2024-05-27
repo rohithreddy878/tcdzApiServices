@@ -24,16 +24,19 @@ class PlayerPlayedResource(Resource):
     def __init__(self):
         self.tag = "PlayerPlayedResource"
 
-    def get(self, playerId, role):
+    def get(self, playerId):
         count = 0
-        if(role=='batter'):
-             query = text("SELECT count(*) from cricket.deliveries WHERE batter= :playerId")
-        elif(role=='bowler'):
-             query = text("SELECT count(*) from cricket.deliveries WHERE bowler= :playerId")        
-        result = db.session.execute(query, {"playerId": playerId})
-        res = result.mappings().all()
-        countRes = res[0].count 
-        return {'status': 'success', 'data': {"count":countRes}}, 200
+        battingQuery = text("SELECT count(*) from cricket.deliveries WHERE batter= :playerId")
+        bowlingQuery= text("SELECT count(*) from cricket.deliveries WHERE bowler= :playerId")
+        battingResult = db.session.execute(battingQuery, {"playerId": playerId})
+        battingRes = battingResult.mappings().all()
+        bowlingResult = db.session.execute(bowlingQuery, {"playerId": playerId})
+        bowlingRes = bowlingResult.mappings().all()
+        deliveriesPlayed={
+            "batting":battingRes[0].count,
+            "bowling": bowlingRes[0].count
+        }
+        return {'status': 'success', 'data':deliveriesPlayed}, 200
 
 class FavouritePlayersResource(Resource):
     def __init__(self):

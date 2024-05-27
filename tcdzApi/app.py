@@ -16,7 +16,7 @@ api.add_resource(ScorecardResource,'/scorecards/<int:matchId>')
 api.add_resource(MatchesListPaginatedResource,'/matches/paginated/<int:leagueEventId>')
 
 api.add_resource(PlayerResource,'/players/<int:playerId>')
-api.add_resource(PlayerPlayedResource,'/players/<int:playerId>/playedAs/<string:role>')
+api.add_resource(PlayerPlayedResource,'/players/<int:playerId>/playedAs')
 api.add_resource(FavouritePlayersResource,'/favourites/players')
 api.add_resource(SearchPlayersResource,'/search/players/<string:searchString>')
 api.add_resource(PlayerCareerStatsResource, '/stats/players/<int:playerId>')

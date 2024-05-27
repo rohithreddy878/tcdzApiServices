@@ -6,6 +6,8 @@ FAVOURITE_BATSMEN_LIST = ["Virat Kohli","Kane Williamson","Kieron Pollard"];
 FAVOURITE_BOWLERS_LIST = ["Ravichandran Ashwin","Jasprit Bumrah","Sunil Narine"];
 FAVOURITE_ALLROUNDERS_LIST = ["Ravindra Jadeja","Hardik Pandya","Andre Russell"];
 
+BATTING_HIGHLIGHTS_REMOVABLE_WORDS= ['delivery', 'bat','ball', 'boundary', 'fielder', 'runs', 'fence', 'man']
+
 PLAYERS_SEARCH_QUERY = """
 SELECT *
 FROM cricket.players pl
