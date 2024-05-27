@@ -21,8 +21,8 @@ import numpy as np
 nlp = spacy.load('en_core_web_sm')
 
 # Ensure the necessary NLTK data is available
-# nltk.download('punkt')
-# nltk.download('stopwords')
+nltk.download('punkt')
+nltk.download('stopwords')
 
 
 class PlayerBatStrengthsResource(Resource):
