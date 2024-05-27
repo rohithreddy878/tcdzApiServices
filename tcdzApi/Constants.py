@@ -2,7 +2,7 @@ BOWLER_CREDITED_WICKET_KINDS = ["lbw","caught","bowled","stumped","caught and bo
 
 ALL_WICKET_KINDS = ["caught","bowled","lbw","run out","stumped","caught and bowled","retired out","retired hurt","hit wicket","obstructing the field"];
 
-FAVOURITE_BATSMEN_LIST = ["Virat Kohli","Kane Williamson","Kieron Pollard"];
+FAVOURITE_BATSMEN_LIST = ["Virat Kohli","Kieron Pollard"];
 FAVOURITE_BOWLERS_LIST = ["Ravichandran Ashwin","Jasprit Bumrah","Sunil Narine"];
 FAVOURITE_ALLROUNDERS_LIST = ["Ravindra Jadeja","Hardik Pandya","Andre Russell"];
 
