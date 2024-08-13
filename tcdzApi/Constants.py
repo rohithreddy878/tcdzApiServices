@@ -52,8 +52,8 @@ PLAYER_TOTAL_IPL_MATCHES_PLAYED = """
     	p.player10 = :playerIdParam OR p.player11 = :playerIdParam OR p.subs_in_player = :playerIdParam);
 """
 
-PLAYER_INNINGS_BATTED_QUERY="SELECT COUNT(*) FROM (SELECT DISTINCT d.innings_id FROM cricket.Deliveries d WHERE d.batter = :playerIdParam);"
-PLAYER_INNINGS_BOWLED_QUERY="SELECT COUNT(*) FROM (SELECT DISTINCT d.innings_id FROM cricket.Deliveries d WHERE d.bowler = :playerIdParam);"
+PLAYER_INNINGS_BATTED_QUERY="SELECT DISTINCT d.innings_id FROM cricket.Deliveries d WHERE d.batter = :playerIdParam;"
+PLAYER_INNINGS_BOWLED_QUERY="SELECT DISTINCT d.innings_id FROM cricket.Deliveries d WHERE d.bowler = :playerIdParam;"
 
 
 BATTER_RUNS_SCORED_QUERY="SELECT sum(r.batter_runs) FROM cricket.Runs r where r.delivery_id in (SELECT d.delivery_id FROM cricket.Deliveries d WHERE d.batter = :playerIdParam);"

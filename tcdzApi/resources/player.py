@@ -88,8 +88,8 @@ class PlayerCareerStatsResource(Resource):
     def get(self, playerId):
         stats = {}
         stats['totalMatches'] = self.getQueryResultForPlayerStat(Constants.PLAYER_TOTAL_IPL_MATCHES_PLAYED, playerId);
-        stats['inningsBatted'] = self.getQueryResultForPlayerStat(Constants.PLAYER_INNINGS_BATTED_QUERY, playerId);
-        stats['inningsBowled'] = self.getQueryResultForPlayerStat(Constants.PLAYER_INNINGS_BOWLED_QUERY, playerId);
+        stats['inningsBatted'] = self.getQueryResultForPlayerStatRowCount(Constants.PLAYER_INNINGS_BATTED_QUERY, playerId);
+        stats['inningsBowled'] = self.getQueryResultForPlayerStatRowCount(Constants.PLAYER_INNINGS_BOWLED_QUERY, playerId);
 
         runs = self.getQueryResultForPlayerStat(Constants.BATTER_RUNS_SCORED_QUERY, playerId)
         stats['runsScored'] = float(runs) if runs else 0
@@ -130,6 +130,12 @@ class PlayerCareerStatsResource(Resource):
         query = text(queryString)
         queryRes = db.session.execute(query, {"playerIdParam": playerId})
         count = queryRes.scalar()
+        return count
+
+    def getQueryResultForPlayerStatRowCount(self, queryString, playerId):
+        query = text(queryString)
+        queryRes = db.session.execute(query, {"playerIdParam": playerId})
+        count = queryRes.rowcount
         return count
 
     def getQueryResultForPlayerStatTwoParams(self, queryString, playerId, landmark):
