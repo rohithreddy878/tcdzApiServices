@@ -12,7 +12,7 @@ def create_app(config_filename):
     print("calling correct create_app")
     app.config.from_object(config_filename)
     print("printing existing blueprints: ",app.blueprints)
-    app.register_blueprint(api_bp, url_prefix='/cric/ml/services', name='api_v1')
+    app.register_blueprint(api_bp, url_prefix='/cric/ml/services')
     db.init_app(app)
     return app
 
