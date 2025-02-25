@@ -11,7 +11,7 @@ CORS(app, resources={r"/*": {"origins": "*"}})
 def create_app(config_filename):
     print("calling correct create_app")
     app.config.from_object(config_filename)
-    app.register_blueprint(api_bp, url_prefix='/cric/ml/services')
+    app.register_blueprint(api_bp, url_prefix='/cric/ml/services', name='api_v1')
     db.init_app(app)
     return app
 
