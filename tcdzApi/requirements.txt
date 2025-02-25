@@ -35,7 +35,7 @@ packaging==24.0
 pillow==10.3.0
 preshed==3.0.9
 psycopg2-binary==2.9.9
-pydantic==2.7.1
+pydantic==1.10.18
 pydantic_core==2.18.2
 pyparsing==3.1.2
 python-dateutil==2.9.0.post0
@@ -45,7 +45,7 @@ requests==2.32.2
 setuptools==70.0.0
 six==1.16.0
 smart-open==6.4.0
-spacy==3.7.4
+spacy==3.7.6
 spacy-legacy==3.0.12
 spacy-loggers==1.0.5
 SQLAlchemy==2.0.30
