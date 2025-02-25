@@ -7,7 +7,8 @@ from resources.player import PlayerPlayedResource, PlayerCareerStatsResource, Pl
 from resources.playerAnalysis import PlayerBatStrengthsResource, PlayerBatHighlightsImageResource
 from resources.league import LeagueSeasonsResource, LeagueEventsForSeasonResource
 
-api_bp = Blueprint('cric/ml/services', __name__)
+#api_bp = Blueprint('cric/ml/services', __name__)
+api_bp = Blueprint('api_v1', __name__)
 api = Api(api_bp)
 
 # Route For Match endpoint
