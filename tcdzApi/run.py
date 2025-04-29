@@ -28,5 +28,5 @@ def homepage():
 
 if __name__ == "__main__":
     PresentConfig = DevelopmentConfig
-    app = create_app(PresentConfig)
+    #app = create_app(PresentConfig)
     app.run(debug=True,port=9000)
