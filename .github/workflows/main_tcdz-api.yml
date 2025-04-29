@@ -1,8 +1,4 @@
-# Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
-# More GitHub Actions for Azure: https://github.com/Azure/actions
-# More info on Python, GitHub Actions, and Azure App Service: https://aka.ms/python-webapps-actions
-
-name: Build and deploy Python app to Azure Web App - tcdz-api
+name: Build and deploy Python app to Azure Web App - tcdzApi
 
 on:
   push:
@@ -13,6 +9,8 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
 
     steps:
       - uses: actions/checkout@v4
@@ -21,36 +19,24 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      
-      - name: change curr directory to tcdzApi
-        run: |
-          cd tcdzApi
-          pwd
 
-      - name: Create and start virtual environment
+      - name: Install dependencies
+        working-directory: tcdzApi
         run: |
-          cd tcdzApi
           python -m venv venv
           source venv/bin/activate
-      
-      - name: Install dependencies
-        run: |
-          cd tcdzApi
-          ls
           pip install -r requirements.txt
-        
-      # Optional: Add step to run tests here (PyTest, Django test suites, etc.)
 
       - name: Zip artifact for deployment
-        run: zip release.zip ./cd tcdzApi/* -r
+        run: |
+          cd tcdzApi
+          zip -r ../release.zip .
 
       - name: Upload artifact for deployment jobs
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: python-app
-          path: |
-            release.zip
-            !venv/
+          path: release.zip
 
   deploy:
     runs-on: ubuntu-latest
@@ -59,36 +45,28 @@ jobs:
       name: 'Production'
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
     permissions:
-      id-token: write #This is required for requesting the JWT
+      id-token: write
+      contents: read
 
     steps:
       - name: Download artifact from build job
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: python-app
 
       - name: Unzip artifact for deployment
         run: unzip release.zip
 
-      
       - name: Login to Azure
-        uses: azure/login@v1
+        uses: azure/login@v2
         with:
-          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_52B4251807E94CA4ABE3924554213FC8 }}
-          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_FE8748E3F0364A629AFB97A861264536 }}
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_8CFC00BD940E4C8C8B3A13BD214AF407 }}
+          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_219256825306445DA4FC8BAD81EDEDE6 }}
+          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_A0904C738792493386D47C3FA526FD99 }}
+          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_BFEB2D3C0F0549B2856D52A75743B319 }}
 
-      - name: 'Deploy to Azure Web App'
-        uses: azure/webapps-deploy@v2
+      - name: Deploy to Azure Web App
+        uses: azure/webapps-deploy@v3
         id: deploy-to-webapp
         with:
-          app-name: 'tcdz-api'
+          app-name: 'tcdzApi'
           slot-name: 'Production'
-
-      - name: Run Flask application
-        run: |
-          az webapp config set --name tcdz-api --resource-group tcdz --startup-file 'cd tcdzApi && pwd && pip install -r requirements.txt && gunicorn -b 0.0.0.0:8000 --log-level debug run:app'
-        env:
-          AZURE_WEBAPP_NAME: tcdz-api
-          AZURE_RESOURCE_GROUP: tcdz
-          
