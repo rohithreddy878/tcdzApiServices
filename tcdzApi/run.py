@@ -18,7 +18,7 @@ def create_app(config_filename):
 
 
 # ONLY FOR PRODUCTION, COMMENT IN DEV ENV
-# app = create_app(ProductionConfig)
+app = create_app(ProductionConfig)
 
 
 @app.route('/')
