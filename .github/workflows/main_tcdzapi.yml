@@ -24,18 +24,28 @@ jobs:
         with:
           python-version: '3.12'
 
+      
+      - name: change curr directory to tcdzApi
+        run: |
+          cd tcdzApi
+          pwd
+
       - name: Create and start virtual environment
         run: |
+          cd tcdzApi
           python -m venv venv
           source venv/bin/activate
       
       - name: Install dependencies
-        run: pip install -r requirements.txt
+        run: |
+          cd tcdzApi
+          ls
+          pip install -r requirements.txt
         
       # Optional: Add step to run tests here (PyTest, Django test suites, etc.)
 
       - name: Zip artifact for deployment
-        run: zip release.zip ./* -r
+        run: zip release.zip ./cd tcdzApi/* -r
 
       - name: Upload artifact for deployment jobs
         uses: actions/upload-artifact@v3
@@ -78,4 +88,11 @@ jobs:
         with:
           app-name: 'tcdzApi'
           slot-name: 'Production'
+
+      - name: Run Flask application
+        run: |
+          az webapp config set --name tcdzApi --resource-group tcdz-rest --startup-file 'cd tcdzApi && pwd && pip install -r requirements.txt && gunicorn -b 0.0.0.0:8000 --log-level debug run:app'
+        env:
+          AZURE_WEBAPP_NAME: tcdzApi
+          AZURE_RESOURCE_GROUP: tcdz-rest
           
