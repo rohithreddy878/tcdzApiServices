@@ -29,17 +29,11 @@ def create_app(config_filename):
 
 
 # ONLY FOR PRODUCTION, COMMENT IN DEV ENV
-app = create_app(ProductionConfig)
+# app = create_app(ProductionConfig)
 
 
-# @app.route('/')
-# @app.route('/cric/ml/services/')
-# def homepage():
-#     return render_template('index.html')
-
+# In local development, use DevelopmentConfig
 if __name__ == "__main__":
-    #PresentConfig = DevelopmentConfig
-    #app = create_app(PresentConfig)
-    #app.run(debug=True,port=9000)
+    app = create_app(DevelopmentConfig)
     port = int(os.environ.get("PORT", 9000))
     app.run(debug=True, port=port)
