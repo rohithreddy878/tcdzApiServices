@@ -1,8 +1,7 @@
-from flask import jsonify, Flask, request, render_template, redirect, url_for, send_file
-from flask_restful import Resource, reqparse
-from sqlalchemy import or_, text
+from flask import send_file
+from flask_restful import Resource
+from sqlalchemy import text
 import re
-from PIL import Image
 from io import BytesIO
 
 from model import db, Player
@@ -100,6 +99,41 @@ class PlayerBatStrengthsResource(Resource):
             re.IGNORECASE)
         matches = pattern.findall(commentary)
         return ' '.join([' '.join(match).strip() for match in matches])
+
+class BatsmenStrengthsResource(Resource):
+    def __init__(self):
+        self.tag = "BatsmenStrengthsResource"
+
+    def get(self, playerId):
+        strengths = {}
+        fours_comms = self.getPlayerRunsComms(playerId, 4)
+        sixes_comms = self.getPlayerRunsComms(playerId, 6)
+        outs_comms = self.getPlayerOutsComms(playerId)
+        return {'status': 'success', 'data': strengths}, 200
+
+    def getLengthsandLinesProbabibilitiesMapsFromCommsList(self, comms_list):
+        return []
+
+    def getPlayerRunsComms(self, playerId, runsParam):
+        query = text(Constants.PLAYER_RUNS_SCORED_COMMS_QUERY)
+        queryRes = db.session.execute(query, {"playerIdParam": playerId, "runsParam": runsParam})
+        queryResMaps = queryRes.mappings().all()
+        runs_comms = self.mapCommsQueryResultsToList(queryResMaps)
+        return runs_comms
+
+    def getPlayerOutsComms(self, playerId):
+        query = text(Constants.PLAYER_GOT_OUT_COMMS_QUERY)
+        queryResMap = db.session.execute(query, {"playerIdParam": playerId}).mappings().all()
+        outs_comms = self.mapCommsQueryResultsToList(queryResMap)
+        return outs_comms
+
+    def mapCommsQueryResultsToList(self, queryResMap):
+        comms_list = []
+        for row in queryResMap:
+            c = row["cricbuzz_commentary"]
+            comms_list.append(c)
+        return comms_list
+
 
 
 class PlayerBatHighlightsImageResource(Resource):
