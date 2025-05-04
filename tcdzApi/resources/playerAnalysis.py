@@ -117,22 +117,21 @@ class BatsmanStrengthsResource(Resource):
     def get(self, playerId):
         strengths = {}
 
-        fours_comms = self.getPlayerRunsComms(playerId, 4)
-        fours_lines, fours_lengths = self.getLengthsandLinesProbabibilitiesMapsFromCommsList(fours_comms)
-        strengths["fours_lines_counter"] = Counter(fours_lines)
-        strengths["fours_lengths_counter"] = Counter(fours_lengths)
+        comms = self.getPlayerRunsComms(playerId, 4)
+        #print("no of fours: ", len(comms))
+        li, le = self.getLengthsandLinesProbabibilitiesMapsFromCommsList(comms)
+        strengths["fours_lines_counter"] = Counter(li)
+        strengths["fours_lengths_counter"] = Counter(le)
 
-        sixes_comms = self.getPlayerRunsComms(playerId, 6)
-        sixes_lines, sixes_lengths = self.getLengthsandLinesProbabibilitiesMapsFromCommsList(sixes_comms)
-        strengths[("sixes_l"
-                   ""
-                   "ines_counter")] = Counter(sixes_lines)
-        strengths["sixes_lengths_counter"] = Counter(sixes_lengths)
+        comms = self.getPlayerRunsComms(playerId, 6)
+        li, sixes_lengths = self.getLengthsandLinesProbabibilitiesMapsFromCommsList(comms)
+        strengths["sixes_lines_counter"] = Counter(li)
+        strengths["sixes_lengths_counter"] = Counter(le)
 
-        outs_comms = self.getPlayerOutsComms(playerId)
-        outs_lines, outs_lengths = self.getLengthsandLinesProbabibilitiesMapsFromCommsList(outs_comms)
-        strengths["outs_lines_counter"] = Counter(outs_lines)
-        strengths["outs_lengths_counter"] = Counter(outs_lengths)
+        comms = self.getPlayerOutsComms(playerId)
+        li, le = self.getLengthsandLinesProbabibilitiesMapsFromCommsList(comms)
+        strengths["outs_lines_counter"] = Counter(li)
+        strengths["outs_lengths_counter"] = Counter(le)
 
         return {'status': 'success', 'data': strengths}, 200
 
@@ -165,7 +164,7 @@ class BatsmanStrengthsResource(Resource):
 
         num_lines = len(line_encoder.classes_)
         num_lengths = len(length_encoder.classes_)
-        print(num_lines, num_lengths)
+        ## print(num_lines, num_lengths)
 
         # Initialize and load model weights
         tokenizer = AutoTokenizer.from_pretrained("google/mobilebert-uncased")
@@ -177,11 +176,15 @@ class BatsmanStrengthsResource(Resource):
         lengths = []
         for c in comms_list:
             li, le = self.predict_line_length(c,model, tokenizer, line_encoder, length_encoder)
+            if li is None or le is None:
+                continue
             lines.append(li)
             lengths.append(le)
         return lines, lengths
 
     def predict_line_length(self, c, model, tokenizer, line_encoder, length_encoder):
+        if not c:
+            return None, None
         inputs = tokenizer(c, return_tensors="pt", padding=True, truncation=True, max_length=512)
         input_ids = inputs["input_ids"]
         attention_mask = inputs["attention_mask"]
