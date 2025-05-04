@@ -3,6 +3,7 @@ from flask_restful import Resource
 from sqlalchemy import text
 import re
 from io import BytesIO
+from collections import Counter
 
 from model import db, Player
 import Constants
@@ -22,6 +23,15 @@ nlp = spacy.load('en_core_web_sm')
 # Ensure the necessary NLTK data is available
 nltk.download('punkt')
 nltk.download('stopwords')
+
+#Ml model inferencing
+from flask_restful import Resource
+from transformers import AutoTokenizer
+import torch
+from ml.multiTaskModel import MultiTaskModel
+import pickle
+from torch.serialization import add_safe_globals
+from sklearn.preprocessing import LabelEncoder
 
 
 class PlayerBatStrengthsResource(Resource):
@@ -100,19 +110,31 @@ class PlayerBatStrengthsResource(Resource):
         matches = pattern.findall(commentary)
         return ' '.join([' '.join(match).strip() for match in matches])
 
-class BatsmenStrengthsResource(Resource):
+class BatsmanStrengthsResource(Resource):
     def __init__(self):
-        self.tag = "BatsmenStrengthsResource"
+        self.tag = "BatsmanStrengthsResource"
 
     def get(self, playerId):
         strengths = {}
-        fours_comms = self.getPlayerRunsComms(playerId, 4)
-        sixes_comms = self.getPlayerRunsComms(playerId, 6)
-        outs_comms = self.getPlayerOutsComms(playerId)
-        return {'status': 'success', 'data': strengths}, 200
 
-    def getLengthsandLinesProbabibilitiesMapsFromCommsList(self, comms_list):
-        return []
+        fours_comms = self.getPlayerRunsComms(playerId, 4)
+        fours_lines, fours_lengths = self.getLengthsandLinesProbabibilitiesMapsFromCommsList(fours_comms)
+        strengths["fours_lines_counter"] = Counter(fours_lines)
+        strengths["fours_lengths_counter"] = Counter(fours_lengths)
+
+        sixes_comms = self.getPlayerRunsComms(playerId, 6)
+        sixes_lines, sixes_lengths = self.getLengthsandLinesProbabibilitiesMapsFromCommsList(sixes_comms)
+        strengths[("sixes_l"
+                   ""
+                   "ines_counter")] = Counter(sixes_lines)
+        strengths["sixes_lengths_counter"] = Counter(sixes_lengths)
+
+        outs_comms = self.getPlayerOutsComms(playerId)
+        outs_lines, outs_lengths = self.getLengthsandLinesProbabibilitiesMapsFromCommsList(outs_comms)
+        strengths["outs_lines_counter"] = Counter(outs_lines)
+        strengths["outs_lengths_counter"] = Counter(outs_lengths)
+
+        return {'status': 'success', 'data': strengths}, 200
 
     def getPlayerRunsComms(self, playerId, runsParam):
         query = text(Constants.PLAYER_RUNS_SCORED_COMMS_QUERY)
@@ -134,6 +156,47 @@ class BatsmenStrengthsResource(Resource):
             comms_list.append(c)
         return comms_list
 
+    def getLengthsandLinesProbabibilitiesMapsFromCommsList(self, comms_list):
+        # Load the encoders
+        with open('static/ml_models/linelengthpredictor/line_encoder.pkl', 'rb') as f:
+            line_encoder = pickle.load(f)
+        with open('static/ml_models/linelengthpredictor/length_encoder.pkl', 'rb') as f:
+            length_encoder = pickle.load(f)
+
+        num_lines = len(line_encoder.classes_)
+        num_lengths = len(length_encoder.classes_)
+        print(num_lines, num_lengths)
+
+        # Initialize and load model weights
+        tokenizer = AutoTokenizer.from_pretrained("google/mobilebert-uncased")
+        model = MultiTaskModel("google/mobilebert-uncased", num_line_labels=num_lines, num_length_labels=num_lengths)
+        model.load_state_dict(torch.load("static/ml_models/linelengthpredictor/linelengthpredictor_weights.pth", map_location="cpu"))
+        model.eval()
+
+        lines = []
+        lengths = []
+        for c in comms_list:
+            li, le = self.predict_line_length(c,model, tokenizer, line_encoder, length_encoder)
+            lines.append(li)
+            lengths.append(le)
+        return lines, lengths
+
+    def predict_line_length(self, c, model, tokenizer, line_encoder, length_encoder):
+        inputs = tokenizer(c, return_tensors="pt", padding=True, truncation=True, max_length=512)
+        input_ids = inputs["input_ids"]
+        attention_mask = inputs["attention_mask"]
+
+        #model.eval()
+        with torch.no_grad():
+            out = model(input_ids=input_ids, attention_mask=attention_mask)
+
+        pred_line_index = torch.argmax(out["logits_line"], dim=-1).item()
+        pred_length_index = torch.argmax(out["logits_length"], dim=-1).item()
+
+        pred_line = line_encoder.inverse_transform([pred_line_index])[0]
+        pred_length = length_encoder.inverse_transform([pred_length_index])[0]
+
+        return pred_line, pred_length
 
 
 class PlayerBatHighlightsImageResource(Resource):

@@ -5,7 +5,10 @@ from resources.scorecard import ScorecardResource
 from resources.player import PlayerResource, FavouritePlayersResource, SearchPlayersResource
 from resources.player import PlayerPlayedResource, PlayerCareerStatsResource, PlayerTeamsResource
 from resources.playerAnalysis import PlayerBatStrengthsResource, PlayerBatHighlightsImageResource
+from resources.playerAnalysis import BatsmanStrengthsResource
 from resources.league import LeagueSeasonsResource, LeagueEventsForSeasonResource
+
+
 
 #api_bp = Blueprint('cric/ml/services', __name__)
 api_bp = Blueprint('api_v1', __name__)
@@ -24,6 +27,7 @@ api.add_resource(PlayerCareerStatsResource, '/stats/players/<int:playerId>')
 api.add_resource(PlayerTeamsResource, '/teams/players/<int:playerId>')
 api.add_resource(PlayerBatStrengthsResource, '/strengths/bat/players/<int:playerId>/<string:area>')
 api.add_resource(PlayerBatHighlightsImageResource, '/strengths/bat/highlights/players/<int:playerId>/<string:area>')
+api.add_resource(BatsmanStrengthsResource, '/bat/strengths/players/<int:playerId>')
 
 
 api.add_resource(LeagueSeasonsResource, '/leagues/seasons')
