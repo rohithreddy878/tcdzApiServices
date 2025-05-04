@@ -1,8 +1,8 @@
-from flask import Flask, redirect, render_template, url_for
+from flask import Flask, render_template
 from app import api_bp
 import os
-from model import db #, redis_cache
-from config import DevelopmentConfig, TestingConfig, BaseConfig, PresentConfig, ProductionConfig
+from model import db
+from config import DevelopmentConfig  #, ProductionConfig
 from flask_cors import CORS
 
 

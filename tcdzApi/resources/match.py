@@ -1,11 +1,8 @@
-from flask import jsonify, request
-from ast import literal_eval
-from sqlalchemy import desc, func
-import json
+from flask import request
+from sqlalchemy import desc
 from flask_restful import Resource
 
-from model import db, Match, Delivery, Innings, Player
-from Constants import BOWLER_CREDITED_WICKET_KINDS
+from model import Match
 
 class MatchResource(Resource):
     def __init__(self):

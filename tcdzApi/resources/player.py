@@ -1,12 +1,8 @@
-from flask import jsonify, request
-from flask_restful import Resource, reqparse
+from flask_restful import Resource
 from sqlalchemy import or_, text
-from ast import literal_eval
 import re
-import json
 
-from model import db, Match, Delivery, Innings, Player, Team
-from Constants import BOWLER_CREDITED_WICKET_KINDS
+from model import db, Player, Team
 from Constants import FAVOURITE_BATSMEN_LIST, FAVOURITE_BOWLERS_LIST, FAVOURITE_ALLROUNDERS_LIST
 import Constants
 

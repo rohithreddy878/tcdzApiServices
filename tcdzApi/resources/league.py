@@ -1,8 +1,5 @@
-from flask import jsonify, request
 from flask_restful import Resource
-from ast import literal_eval
 from sqlalchemy import text
-import json
 
 from model import db, LeagueEvent
 

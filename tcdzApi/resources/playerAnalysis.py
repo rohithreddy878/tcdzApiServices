@@ -1,11 +1,10 @@
 from flask import send_file
-from flask_restful import Resource
 from sqlalchemy import text
 import re
 from io import BytesIO
 from collections import Counter
 
-from model import db, Player
+from model import db
 import Constants
 
 import nltk
@@ -17,7 +16,6 @@ import matplotlib
 matplotlib.use('Agg')  # Use the Agg backend for non-GUI environments
 import matplotlib.pyplot as plt
 import spacy
-import numpy as np
 nlp = spacy.load('en_core_web_sm')
 
 # Ensure the necessary NLTK data is available
@@ -30,8 +28,6 @@ from transformers import AutoTokenizer
 import torch
 from ml.multiTaskModel import MultiTaskModel
 import pickle
-from torch.serialization import add_safe_globals
-from sklearn.preprocessing import LabelEncoder
 
 
 class PlayerBatStrengthsResource(Resource):

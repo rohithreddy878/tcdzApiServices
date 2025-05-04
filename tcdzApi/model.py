@@ -1,6 +1,5 @@
-from flask import Flask, jsonify
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import Sequence, ForeignKey
+from sqlalchemy import Sequence
 
 db = SQLAlchemy()
 
