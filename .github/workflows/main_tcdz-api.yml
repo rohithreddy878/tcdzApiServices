@@ -64,9 +64,8 @@ jobs:
 
       - name: Clean up existing files in wwwroot
         run: |
-          az webapp ssh --name tcdzApi --resource-group tcdz-rest
-          cd /home/site/wwwroot
-          rm -rf *
+          az webapp config set --name tcdzApi --resource-group tcdz-rest --generic-configurations '{"appSettings": {"WEBSITE_RUN_FROM_PACKAGE": "1"}}'  # Enables deployment using zip
+          az webapp deployment source config-zip --name tcdzApi --resource-group tcdz-rest --src ./release.zip  # Redploys the app and overwrites existing files
 
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v3
