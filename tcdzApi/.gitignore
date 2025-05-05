@@ -102,6 +102,9 @@ ENV/
 .mypy_cache/
 
 
+# node modules
+node_modules/
+
 
 #jetbeans ide 
 .idea/
