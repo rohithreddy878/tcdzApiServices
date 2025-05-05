@@ -19,7 +19,7 @@ jobs:
       - name: Zip artifact for deployment
         run: |
           cd tcdzApi
-          zip -r ../release.zip .
+          zip -r ../release.zip . -x "*.gitignore"
 
       - name: Upload artifact for deployment jobs
         uses: actions/upload-artifact@v4
