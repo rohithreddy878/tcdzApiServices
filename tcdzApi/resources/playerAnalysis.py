@@ -22,7 +22,7 @@ nlp = spacy.load('en_core_web_sm')
 nltk.download('punkt')
 nltk.download('stopwords')
 
-#Ml model inferencing
+# Ml model inferencing
 from flask_restful import Resource
 from transformers import AutoTokenizer
 import torch
@@ -49,7 +49,7 @@ class PlayerBatStrengthsResource(Resource):
         query = text(Constants.PLAYER_RUNS_SCORED_COMMS_QUERY)
         queryRes = db.session.execute(query, {"playerIdParam": playerId, "runsParam": 4})
         queryResMaps = queryRes.mappings().all()
-        #print("queryResMaps: ",queryResMaps)
+        # print("queryResMaps: ",queryResMaps)
         cricbuzz_comms = []
         i = 1
         for row in queryResMaps:
@@ -106,6 +106,7 @@ class PlayerBatStrengthsResource(Resource):
         matches = pattern.findall(commentary)
         return ' '.join([' '.join(match).strip() for match in matches])
 
+
 class BatsmanStrengthsResource(Resource):
     def __init__(self):
         self.tag = "BatsmanStrengthsResource"
@@ -114,18 +115,18 @@ class BatsmanStrengthsResource(Resource):
         strengths = {}
 
         comms = self.getPlayerRunsComms(playerId, 4)
-        #print("no of fours: ", len(comms))
-        li, le = self.getLengthsandLinesProbabibilitiesMapsFromCommsList(comms)
+        # print("no of fours: ", len(comms))
+        li, le = self.getLengthsAndLinesProbabilitiesMapsFromCommsList(comms)
         strengths["fours_lines_counter"] = Counter(li)
         strengths["fours_lengths_counter"] = Counter(le)
 
         comms = self.getPlayerRunsComms(playerId, 6)
-        li, sixes_lengths = self.getLengthsandLinesProbabibilitiesMapsFromCommsList(comms)
+        li, sixes_lengths = self.getLengthsAndLinesProbabilitiesMapsFromCommsList(comms)
         strengths["sixes_lines_counter"] = Counter(li)
         strengths["sixes_lengths_counter"] = Counter(le)
 
         comms = self.getPlayerOutsComms(playerId)
-        li, le = self.getLengthsandLinesProbabibilitiesMapsFromCommsList(comms)
+        li, le = self.getLengthsAndLinesProbabilitiesMapsFromCommsList(comms)
         strengths["outs_lines_counter"] = Counter(li)
         strengths["outs_lengths_counter"] = Counter(le)
 
@@ -151,7 +152,7 @@ class BatsmanStrengthsResource(Resource):
             comms_list.append(c)
         return comms_list
 
-    def getLengthsandLinesProbabibilitiesMapsFromCommsList(self, comms_list):
+    def getLengthsAndLinesProbabilitiesMapsFromCommsList(self, comms_list):
         # Load the encoders
         with open('static/ml_models/linelengthpredictor/line_encoder.pkl', 'rb') as f:
             line_encoder = pickle.load(f)
@@ -160,7 +161,7 @@ class BatsmanStrengthsResource(Resource):
 
         num_lines = len(line_encoder.classes_)
         num_lengths = len(length_encoder.classes_)
-        ## print(num_lines, num_lengths)
+        # print(num_lines, num_lengths)
 
         # Initialize and load model weights
         tokenizer = AutoTokenizer.from_pretrained("google/mobilebert-uncased")
@@ -171,7 +172,7 @@ class BatsmanStrengthsResource(Resource):
         lines = []
         lengths = []
         for c in comms_list:
-            li, le = self.predict_line_length(c,model, tokenizer, line_encoder, length_encoder)
+            li, le = self.predict_line_length(c, model, tokenizer, line_encoder, length_encoder)
             if li is None or le is None:
                 continue
             lines.append(li)
@@ -185,7 +186,7 @@ class BatsmanStrengthsResource(Resource):
         input_ids = inputs["input_ids"]
         attention_mask = inputs["attention_mask"]
 
-        #model.eval()
+        # model.eval()
         with torch.no_grad():
             out = model(input_ids=input_ids, attention_mask=attention_mask)
 
@@ -204,7 +205,7 @@ class PlayerBatHighlightsImageResource(Resource):
         self.pbsrObj = PlayerBatStrengthsResource()
 
     def get(self, playerId, area):
-        removable_words= Constants.BATTING_HIGHLIGHTS_REMOVABLE_WORDS
+        removable_words = Constants.BATTING_HIGHLIGHTS_REMOVABLE_WORDS
         comms = []
         if area == 'fours':
             cricbuzz_comms = self.pbsrObj.getPlayerFoursScoredData(playerId)
@@ -215,9 +216,9 @@ class PlayerBatHighlightsImageResource(Resource):
         img = self.highlight_top_words_in_sentences(comms, removable_words, num_words=25)
         return send_file(img, mimetype='image/png')
 
-    def highlight_top_words_in_sentences(self, sentences,removable_words, num_words=25):
-        names_removed_sentences=[self.remove_proper_nouns(x) for x in sentences if x is not None]
-        cleaned_sentences = [self.clean_comm_text(x,removable_words) for x in names_removed_sentences]
+    def highlight_top_words_in_sentences(self, sentences, removable_words, num_words=25):
+        names_removed_sentences = [self.remove_proper_nouns(x) for x in sentences if x is not None]
+        cleaned_sentences = [self.clean_comm_text(x, removable_words) for x in names_removed_sentences]
         comm_text = ' '.join(cleaned_sentences)
         stop_words = set(stopwords.words('english'))
         tokens = word_tokenize(comm_text)
@@ -236,7 +237,7 @@ class PlayerBatHighlightsImageResource(Resource):
         return img
 
     @staticmethod
-    def clean_comm_text(x,removable_words_list):
+    def clean_comm_text(x, removable_words_list):
         if x is None or x == "":
             return ""
         x = ' '.join(word for word in x.split() if len(word) >= 3)
@@ -249,5 +250,3 @@ class PlayerBatHighlightsImageResource(Resource):
         doc = nlp(text)
         cleaned_text = ' '.join([token.text for token in doc if token.pos_ != 'PROPN'])
         return cleaned_text
-
-
