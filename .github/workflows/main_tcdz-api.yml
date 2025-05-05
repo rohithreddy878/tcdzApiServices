@@ -22,12 +22,14 @@ jobs:
 
       - name: Set up virtual environment
         run: |
+          cd tcdzApi
           python -m venv .my_virt_env
           . .my_virt_env/bin/activate
+          which python
 
       - name: Install dependencies
-        working-directory: tcdzApi
         run: |
+          cd tcdzApi
           . .my_virt_env/bin/activate
           pip install -r requirements.txt
 
